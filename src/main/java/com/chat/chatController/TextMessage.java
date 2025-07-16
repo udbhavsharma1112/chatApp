@@ -16,12 +16,17 @@ public class TextMessage implements IMessage {
 
     @Override
     public void showReceiverMessage() {
-        System.out.println(sender.getUserName() + ": " + message);
+        System.out.println("                                                                      " + sender.getUserName() + ": " + message);
     }
 
     @Override
     public void showSenderMessage() {
         // System.out.println(message);
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
     }
 
     @Override
@@ -34,8 +39,8 @@ public class TextMessage implements IMessage {
         TextMessageDTO dto = TextMessageDTO.deserialize(mqttMessage);
         if (dto == null) return null;
 
-        User sender = new User(dto.senderName, dto.senderEmail);
-        User receiver = new User(dto.receiverName, dto.receiverEmail);
+        User sender = new User(dto.senderName, dto.senderEmail, dto.senderId);
+        User receiver = new User(dto.receiverName, dto.receiverEmail, dto.receiverId);
         return new TextMessage(sender, receiver, dto.message);
     }
 }

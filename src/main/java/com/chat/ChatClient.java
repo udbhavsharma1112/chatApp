@@ -3,59 +3,54 @@ package com.chat;
 import com.chat.auth.User;
 import com.chat.auth.VerifyUser;
 import com.chat.chatController.ChatManager;
+import com.chat.utils.ApiCaller;
+import java.io.File;
+
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Client;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class ChatClient {
 
-    // verify user
-    
-    public void Start() {
-        VerifyUser verifyUser = new VerifyUser();
-        User user = verifyUser.verify();
-        ChatManager chatManager = new ChatManager(user);
-        chatManager.start();
+    private ChatAppConfiguration config;
+
+    public void start() {
+
+        try {
+            // Load config from config.yml
+            try {
+                ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+                config = mapper.readValue(new File("config.yml"), ChatAppConfiguration.class);
+                // use config.getBaseUrl(), etc.
+            } catch (Exception e) {
+                System.err.println("❌ Failed to load configuration: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            Client client = ClientBuilder.newClient();
+
+            // Set your base URL here (can also come from config)
+            String baseUrl = config.getBaseUrl();
+
+            // Initialize the API Caller
+            ApiCaller.init(client, baseUrl);
+
+            // Verify user and start chat
+            VerifyUser verifyUser = new VerifyUser();
+            User user = verifyUser.verify();
+
+            ChatManager chatManager = new ChatManager(user);
+            chatManager.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("❌ Failed to load configuration");
+        }
     }
 
     public static void main(String[] args) {
         ChatClient chatClient = new ChatClient();
-        chatClient.Start();
+        chatClient.start();
     }
-
-
-
-    // public static void main(String[] args) {
-    //     Scanner scanner = new Scanner(System.in);
-
-    //     System.out.print("Enter your username: ");
-    //     String username = scanner.nextLine();
-
-    //     MqttHandler mqtt = new MqttHandler(username);
-    //     mqtt.connect();
-
-    //     System.out.println("Welcome, " + username + "!");
-    //     System.out.println("To send a message: /msg <recipient> <message>");
-
-    //     while (true) {
-    //         String input = scanner.nextLine();
-
-    //         if (input.startsWith("/msg ")) {
-    //             String[] parts = input.split(" ", 3);
-    //             if (parts.length < 3) {
-    //                 System.out.println("Invalid command. Usage: /msg <recipient> <message>");
-    //                 continue;
-    //             }
-
-    //             String recipient = parts[1];
-    //             String message = parts[2];
-
-    //             mqtt.sendMessage(recipient, message);
-    //         } else if (input.equalsIgnoreCase("/exit")) {
-    //             mqtt.disconnect();
-    //             System.out.println("Exiting...");
-    //             break;
-    //         } else {
-    //             System.out.println("Unknown command.");
-    //         }
-    //     }
-    //     scanner.close();
-    // }
 }

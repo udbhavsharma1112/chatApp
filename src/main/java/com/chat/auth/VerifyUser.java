@@ -11,7 +11,7 @@ public class VerifyUser {
             if(method.equals("R")){
                 Register register = new Register();
                 User user = register.addUser();
-                if(user.isVerified()) {
+                if(user != null) {
                     System.out.println("Welcome!! " + user.getUserName());
                     
                     return user;
@@ -21,7 +21,7 @@ public class VerifyUser {
             } else if(method.equals("L")) {
                 SignIn signIn = new SignIn();
                 User user = signIn.verify();
-                if(user.isVerified()){
+                if(user != null){
                     System.out.println("Welcome!! " + user.getUserName());
                     
                     return user;

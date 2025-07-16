@@ -8,6 +8,8 @@ public class TextMessageDTO {
     public String receiverEmail;
     public String receiverName;
     public String message;
+    public String senderId;
+    public String receiverId;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -16,10 +18,12 @@ public class TextMessageDTO {
 
     // Constructor using User objects
     public TextMessageDTO(User sender, User receiver, String message) {
-        this.senderEmail = sender.getEmail();
+        this.senderEmail = sender.getEmailId();
         this.senderName = sender.getUserName();
-        this.receiverEmail = receiver.getEmail();
+        this.senderId = sender.getUserId();
+        this.receiverEmail = receiver.getEmailId();
         this.receiverName = receiver.getUserName();
+        this.receiverId = receiver.getUserId();
         this.message = message;
     }
 

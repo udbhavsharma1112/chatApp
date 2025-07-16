@@ -2,6 +2,8 @@ package com.chat.auth;
 
 import java.util.Scanner;
 
+import com.chat.api.Authentication;
+
 public class Register {
     public User addUser() {
         Scanner scanner = new Scanner(System.in);
@@ -14,16 +16,30 @@ public class Register {
         System.out.println("Confirm your Password: ");
         String rePassword = scanner.nextLine();
         if(rePassword.equals(Password)){
-            // this.register()
-            return new User(UserName, EmailId);
+            User user  = this.register(EmailId, UserName, Password);
+            if(user != null) {
+                System.out.println("Registration Successful");
+                return user;
+            } else {
+                System.out.println("Registration Failed");
+                return null;
+            }
         } else {
             System.out.println("password doesn't matched!!");
-            return new User();
+            return null;
         }
     }
 
-    private boolean register() {
-        // yet to implement
-        return true;
+    private User register(String EmailId, String UserName, String Password) {
+        // Call the API to register the user
+       Authentication authentication = new Authentication();
+        User user = authentication.register(EmailId, UserName, Password);
+        if(user != null) {
+            System.out.println("Registration Successful");
+            return user;
+        } else {
+            System.out.println("Registration Failed");
+            return null;  
+        } 
     }
 }

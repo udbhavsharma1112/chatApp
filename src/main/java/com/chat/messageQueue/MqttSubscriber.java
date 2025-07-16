@@ -12,7 +12,6 @@ public class MqttSubscriber {
     public void subscribe(String topic) {
         try {
             client.subscribe(topic);
-            System.out.println("Subscribed to topic: " + topic);
         } catch (MqttException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package com.chat.chatController;
 import java.util.Scanner;
 import com.chat.auth.User;
+import com.chat.model.MessagePacket;
 
 public class ChatManager {
     Scanner scanner = new Scanner(System.in);
@@ -29,6 +30,7 @@ public class ChatManager {
         }
     }
 
+   
     public void start() {
         if(this.selectUser()) {
             this.chatSession.start();

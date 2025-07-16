@@ -1,6 +1,9 @@
 package com.chat.chatController;
 import com.chat.auth.User;
 import com.chat.messageQueue.*;
+import com.chat.model.MessagePacket;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Scanner;
 import org.eclipse.paho.client.mqttv3.*;
 
@@ -12,13 +15,14 @@ public class ChatSession implements MessageListener{
     private MqttClient client;
     private MqttPublisher publisher;
     private final MqttSubscriber subscriber;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     
 
     public ChatSession(User user) {
         this.user = user;
-        this.clientManager = new MqttClientManager(user.getEmail());
+        this.clientManager = new MqttClientManager(user.getUserId());
         this.client = clientManager.getClient();
-        this.client.setCallback(new MqttMessageHandler(user.getEmail(), this));
+        this.client.setCallback(new MqttMessageHandler(user.getUserId(), this));
         this.publisher = new MqttPublisher(this.client);
         this.subscriber = new MqttSubscriber(this.client);
     }
@@ -28,12 +32,10 @@ public class ChatSession implements MessageListener{
     }
     public void start() {
         clientManager.connect();
-        String topic = "user/" + user.getEmail();
+        String topic = "user/" + user.getUserId();
         subscriber.subscribe(topic);
-        System.out.println("✅ Connected and subscribed to " + topic);
 
         while(true) {
-            System.out.print(">> ");
             String messageContent = scanner.nextLine();
             sendMessage(new TextMessage(user, receiverUser, messageContent));
             try {
@@ -44,12 +46,13 @@ public class ChatSession implements MessageListener{
         }
     }
 
-    
+
     public void sendMessage(IMessage message) {
         if(receiverUser != null) {
             message.showSenderMessage();
-            String topic = "user/" + receiverUser.getEmail();
+            String topic = "user/" + receiverUser.getUserId();
             publisher.sendMessage(topic, message.getSerializedContent());
+            this.saveChatMessage(message.getMessage());
         } else{
             System.out.println("❌ No receiver user set. Please set a receiver user before sending a message.");
         }
@@ -64,6 +67,17 @@ public class ChatSession implements MessageListener{
         IMessage msg = IMessage.deserializeMessage(message);
         if (msg != null) {
             msg.showReceiverMessage();
+        }
+    }
+
+    private void saveChatMessage(String message) {
+        MessagePacket messagePacket = new MessagePacket(user.getUserId(), receiverUser.getUserId(), message);
+        String topic = "/saveMessages";
+        try {
+            String messageToSent = objectMapper.writeValueAsString(messagePacket);
+            publisher.sendMessage(topic, messageToSent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
