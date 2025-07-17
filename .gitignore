@@ -1,0 +1,18 @@
+# Ignore compiled files file name: .gitignore
+*.class
+
+# Ignore Maven / Gradle directories
+/target/
+/build/
+
+# IDE settings
+.idea/
+/*.iml
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
