@@ -21,7 +21,7 @@ public class Register {
                 System.out.println("Registration Successful");
                 return user;
             } else {
-                System.out.println("Registration Failed");
+                System.out.println("User already exists with this emailId or registration failed, try login instead.");
                 return null;
             }
         } else {

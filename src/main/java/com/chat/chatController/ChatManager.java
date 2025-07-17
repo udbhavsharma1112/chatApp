@@ -25,7 +25,7 @@ public class ChatManager {
             chatSession.setReceiverUser(chatList.getSelectedUser());
             return true;
         } else {
-            System.out.println("No Email id Registered with: " + EmailId);
+            System.out.println("No user found with email: " + EmailId);
             return this.selectUser();
         }
     }
@@ -33,6 +33,7 @@ public class ChatManager {
    
     public void start() {
         if(this.selectUser()) {
+            this.chatSession.subscribeToGeneralChat("user/" + user.getUserId()+ '/' + chatList.getSelectedUser().getUserId());
             this.chatSession.start();
         } else {
             System.out.println("❌ Unable to start chat session. Please try again.");

@@ -30,11 +30,12 @@ public class ChatSession implements MessageListener{
     public void setReceiverUser(User user) {
         this.receiverUser = user;
     }
-    public void start() {
-        clientManager.connect();
-        String topic = "user/" + user.getUserId();
-        subscriber.subscribe(topic);
 
+    public void subscribeToGeneralChat(String topic) {
+        clientManager.connect();
+        subscriber.subscribe(topic);
+    }
+    public void start() {
         while(true) {
             String messageContent = scanner.nextLine();
             sendMessage(new TextMessage(user, receiverUser, messageContent));
@@ -50,7 +51,7 @@ public class ChatSession implements MessageListener{
     public void sendMessage(IMessage message) {
         if(receiverUser != null) {
             message.showSenderMessage();
-            String topic = "user/" + receiverUser.getUserId();
+            String topic = "user/" + receiverUser.getUserId() + '/' + user.getUserId();
             publisher.sendMessage(topic, message.getSerializedContent());
             this.saveChatMessage(message.getMessage());
         } else{

@@ -35,7 +35,13 @@ public class ChatHistory {
 
     public void printChatHistory(User selectedUser) {
         System.out.println("Chat History for User: " + selectedUser.getUserName());
-        this.getChatHistory(selectedUser).forEach(message -> {
+        List<MessageHistory> chatHistory = this.getChatHistory(selectedUser);
+        if(chatHistory.isEmpty()) {
+            System.out.println("No chat history found for user: " + selectedUser.getUserName());
+            System.out.println("You can start typing to chat with this user.");
+            return;
+        }
+        chatHistory.forEach(message -> {
             if (message instanceof MessageHistory) {
                 MessageHistory textMessage = (MessageHistory) message;
                 String viewSpace = "";

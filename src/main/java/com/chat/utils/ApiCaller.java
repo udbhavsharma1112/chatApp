@@ -55,8 +55,10 @@ public class ApiCaller {
 
         if (response.getStatus() >= 200 && response.getStatus() < 300) {
             return responseBody;
+        } else if (response.getStatus() == 401) {
+            System.err.println("Unauthorized access");
+            return null;
         } else {
-            System.err.println("❌ API call failed [" + response.getStatus() + "] → " + responseBody);
             return null;
         }
     }
@@ -67,7 +69,6 @@ public class ApiCaller {
             int end = json.indexOf("\"", start);
             return (start >= 9 && end > start) ? json.substring(start, end) : null;
         } catch (Exception e) {
-            System.err.println("⚠️ Failed to extract token from JSON");
             return null;
         }
     }
@@ -80,10 +81,9 @@ public class ApiCaller {
             if (!Files.exists(path)) {
                 Files.createFile(path);
             }
-
             Files.writeString(path, token, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
-            System.err.println("⚠️ Failed to save token to file: " + e.getMessage());
+            System.err.println("something went wrong!!");
         }
     }
 
@@ -93,7 +93,7 @@ public class ApiCaller {
             if (!Files.exists(path)) return null;
             return Files.readString(path).trim();
         } catch (IOException e) {
-            System.err.println("⚠️ Failed to read token: " + e.getMessage());
+            System.err.println("something went wrong!!");
             return null;
         }
     }

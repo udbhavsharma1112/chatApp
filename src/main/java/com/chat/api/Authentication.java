@@ -16,8 +16,7 @@ public class Authentication {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(response, User.class);
         } catch (Exception e) {
-            System.err.println("❌ Failed to parse login response: " + e.getMessage());
-            // e.printStackTrace();
+            System.err.println("Failed to parse login response: " + e.getMessage());
             return null;
         }
     }
