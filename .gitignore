@@ -4,6 +4,7 @@
 # Ignore Maven / Gradle directories
 /target/
 /build/
+token
 
 # IDE settings
 .idea/
@@ -16,3 +17,10 @@ Thumbs.db
 
 # Logs
 *.log
+.lck
+
+#config files
+config.yml
+/*-pom.xml
+settings.json
+
